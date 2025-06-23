@@ -67,7 +67,7 @@ export class Pawn extends Piece {
     const targetPiece = pieces.find((p) => p.col === cCol && p.row === cRow);
     const isOppPiece = targetPiece && targetPiece.clr !== pClr;
 
-    const dir = { white: 1, black: -1 };
+    const dir = { white: -1, black: 1 };
     const colDiff = Math.abs(letterSeq.indexOf(cCol) - letterSeq.indexOf(pCol));
     const rowDiff = cRow - pRow;
 

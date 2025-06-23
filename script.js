@@ -39,18 +39,18 @@ const cells = document.querySelectorAll(".cell");
 // Create Pieces
 
 const pieceConfig = [
-  { type: "pawn", x: [1, 2, 3, 4, 5, 6, 7, 8], y: 2, clr: "white" },
-  { type: "rook", x: [1, 8], y: 1, clr: "white" },
-  { type: "knight", x: [2, 7], y: 1, clr: "white" },
-  { type: "bishop", x: [3, 6], y: 1, clr: "white" },
-  { type: "king", x: [4], y: 1, clr: "white" },
-  { type: "queen", x: [5], y: 1, clr: "white" },
-  { type: "pawn", x: [1, 2, 3, 4, 5, 6, 7, 8], y: 7, clr: "black" },
-  { type: "rook", x: [1, 8], y: 8, clr: "black" },
-  { type: "knight", x: [2, 7], y: 8, clr: "black" },
-  { type: "bishop", x: [3, 6], y: 8, clr: "black" },
-  { type: "king", x: [4], y: 8, clr: "black" },
-  { type: "queen", x: [5], y: 8, clr: "black" },
+  { type: "pawn", x: [1, 2, 3, 4, 5, 6, 7, 8], y: 2, clr: "black" },
+  { type: "rook", x: [1, 8], y: 1, clr: "black" },
+  { type: "knight", x: [2, 7], y: 1, clr: "black" },
+  { type: "bishop", x: [3, 6], y: 1, clr: "black" },
+  { type: "king", x: [5], y: 1, clr: "black" },
+  { type: "queen", x: [4], y: 1, clr: "black" },
+  { type: "pawn", x: [1, 2, 3, 4, 5, 6, 7, 8], y: 7, clr: "white" },
+  { type: "rook", x: [1, 8], y: 8, clr: "white" },
+  { type: "knight", x: [2, 7], y: 8, clr: "white" },
+  { type: "bishop", x: [3, 6], y: 8, clr: "white" },
+  { type: "king", x: [5], y: 8, clr: "white" },
+  { type: "queen", x: [4], y: 8, clr: "white" },
 ];
 
 const classes = {
