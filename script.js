@@ -124,23 +124,23 @@ cells.forEach((cell) => {
     turnToggle = !turnToggle;
     playerTurn = turnToggle ? "white" : "black";
 
-    botMove();
+    setTimeout(() => {
+      botMove();
+    }, 500);
   });
 });
 
 function botMove() {
   if (playerTurn !== "black") return;
-  const botPieces = board.pieces.filter((p) => p.clr === "black");
 
+  const botPieces = board.pieces.filter((p) => p.clr === "black");
   const cells = document.querySelectorAll(".cell");
 
   const movablePieces = [];
 
-  for (let i = 0; i < botPieces.length; i++) {
-    const piece = botPieces[i];
-
-    for (let j = 0; j < cells.length; j++) {
-      const cell = cells[j];
+  botPieces.forEach((piece) => {
+    for (let i = 0; i < cells.length; i++) {
+      const cell = cells[i];
 
       const checkMoveResults = piece.checkValidMove(
         board.pieces,
@@ -153,19 +153,25 @@ function botMove() {
 
       const validMove = checkMoveResults.valid;
 
-      if (validMove) movablePieces.push(piece);
+      if (validMove) {
+        movablePieces.push({
+          piece: piece,
+          cell: cell,
+          moveDetails: checkMoveResults,
+        });
+      }
     }
-  }
+  });
 
   const randIdx = Math.floor(Math.random() * movablePieces.length);
   const selectedPiece = movablePieces[randIdx];
-
-  const captureMove = checkMoveResults.capture.valid;
-  const pieceToCapture = checkMoveResults.capture.piece;
+  const cell = selectedPiece.cell;
+  const captureMove = selectedPiece.moveDetails.capture.valid;
+  const pieceToCapture = selectedPiece.moveDetails.capture.piece;
 
   if (captureMove) board.capturePiece(pieceToCapture);
 
-  selectedPiece.movePiece(
+  selectedPiece.piece.movePiece(
     cell.dataset.col,
     Number(cell.dataset.row),
     board.cellSize
