@@ -3,7 +3,7 @@
 
 @font-face {
   font-family: 'Chess Font';
-  src: url('CHEQ_TT.ttf') format('truetype');
+  src: url('./CHEQ_TT.ttf') format('truetype');
 }
 
 * {
