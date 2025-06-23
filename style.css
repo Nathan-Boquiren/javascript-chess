@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded');
+
+@font-face {
+  font-family: 'Chess Font';
+  src: url('CHEQ_TT.ttf') format('truetype');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--main-font);
+    color: var(--soft-white);
+    font-weight: 400;
+}
+
+:root {
+    --main-font: 'Cinzel', serif;
+    --soft-white: #ececec;
+    --dark-clr: rgb(25, 36, 39);
+    --lighter-clr: hsl(from var(--dark-clr) h calc(s - 5) calc(l + 20));
+    --mid-clr: #34494C;
+}
+
+body {
+    height: 100dvh;
+    background-color: var(--dark-clr);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    flex: 1 1 10vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: .5rem 1rem;
+}
+
+header #add-btn {
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: scale 0.2s ease;
+    &:hover {scale: 1.05}
+    &::selection{background-color: transparent}
+}
+
+/* ===== Main ===== */
+main {
+    flex: 1 1 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 1rem 2rem;
+}
+
+/* ===== Board ===== */
+
+#board {
+    --cell-size: 100px;
+    width: clamp(19rem, 90%, 50rem);
+    aspect-ratio: 1;
+    border-radius: .5rem;
+    box-shadow: 0 0 0 2px var(--lighter-clr);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== Notation Labels ===== */
+
+.label {
+    position: absolute;
+    display: flex;
+    --offset: -2.2rem;
+}
+
+.col-label {
+    inset-inline: 0;
+    top: var(--offset);
+}
+
+.row-label {
+    inset-block: 0;
+    left: var(--offset);
+    flex-direction: column;
+}
+
+.label p {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(255 255 255 / .5);
+    font-size: 1.5rem;
+}
+
+/* ===== Rows ===== */
+
+#board .row {
+    flex: 1;
+    display: flex;
+}
+
+/* ===== Cells ===== */
+
+#board .cell {
+    --fill-clr: rgb(0 0 0 / 0);
+    border-image: fill 1 linear-gradient(var(--fill-clr), var(--fill-clr));
+    flex: 1;
+    transition: all 0.2s ease;
+}
+
+#board .cell.white {background-color: var(--lighter-clr)}
+
+/* ===== Pieces ===== */
+
+.piece {
+    width: var(--cell-size);
+    aspect-ratio: 1;
+    position: absolute;
+    font-family: 'Chess Font', Arial, Helvetica, sans-serif;
+    font-size: clamp(2rem, 8vw, 5rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition:
+        filter .1s ease,
+        transform .3s ease,
+        text-shadow .3s ease,
+        top .5s ease,
+        left .5s ease;
+
+    &::selection {background-color: transparent}
+}
+
+.piece:not(.selected):hover {transform: translateY(-5px); text-shadow: 0 5px 0 var(--mid-clr);}
+
+.piece.white {
+    left: 0;
+    color: var(--soft-white);
+}
+
+.piece.black {
+    left: var(--cell-size);
+    color: var(--dark-clr);
+    -webkit-text-stroke-color: rgb(255 255 255 / .7);
+    -webkit-text-stroke-width: 1px;
+}
+
+.piece.selected {filter: drop-shadow(0 0 .5rem cyan)}
+
+#board:has(.piece.selected) .cell:hover {--fill-clr: rgb(0 255 255 / 0.15); cursor: pointer;}
+#board:has(.piece.white.selected) .piece:not(.selected, .white) {pointer-events: none}
+#board:has(.piece.black.selected) .piece:not(.selected, .black) {pointer-events: none}
+
+.piece.remove {
+    animation: shrink .5s ease forwards;
+}
+
+@keyframes shrink {to {opacity: 0; scale: 0}}

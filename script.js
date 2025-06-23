@@ -1,0 +1,176 @@
+let cl = console.log;
+
+import { Board, Pawn, Rook, Bishop, Knight, Queen, King } from "./classes.js";
+
+// Variables
+let turnToggle = true;
+let playerTurn = turnToggle ? "white" : "black";
+
+// Create Board
+const board = new Board("board");
+board.element.style.setProperty("--cell-size", `${board.cellSize}px`);
+
+for (let i = 1; i <= 8; i++) {
+  const letterSeq = "abcdefgh";
+
+  const row = document.createElement("div");
+  row.classList.add("row", `row-${i}`);
+
+  for (let j = 0; j < letterSeq.length; j++) {
+    const cell = document.createElement("div");
+    cell.classList.add("cell");
+    if (i % 2 !== 0) {
+      cell.classList.add(j % 2 === 0 ? "white" : "black");
+    } else if (i % 2 === 0) {
+      cell.classList.add(j % 2 === 0 ? "black" : "white");
+    }
+
+    cell.dataset.row = i;
+    cell.dataset.col = letterSeq[j];
+    row.append(cell);
+  }
+
+  board.element.append(row);
+}
+
+// DOM Elements
+const cells = document.querySelectorAll(".cell");
+
+// Create Pieces
+
+const pieceConfig = [
+  { type: "pawn", x: [1, 2, 3, 4, 5, 6, 7, 8], y: 2, clr: "white" },
+  { type: "rook", x: [1, 8], y: 1, clr: "white" },
+  { type: "knight", x: [2, 7], y: 1, clr: "white" },
+  { type: "bishop", x: [3, 6], y: 1, clr: "white" },
+  { type: "king", x: [4], y: 1, clr: "white" },
+  { type: "queen", x: [5], y: 1, clr: "white" },
+  { type: "pawn", x: [1, 2, 3, 4, 5, 6, 7, 8], y: 7, clr: "black" },
+  { type: "rook", x: [1, 8], y: 8, clr: "black" },
+  { type: "knight", x: [2, 7], y: 8, clr: "black" },
+  { type: "bishop", x: [3, 6], y: 8, clr: "black" },
+  { type: "king", x: [4], y: 8, clr: "black" },
+  { type: "queen", x: [5], y: 8, clr: "black" },
+];
+
+const classes = {
+  pawn: Pawn,
+  rook: Rook,
+  bishop: Bishop,
+  knight: Knight,
+  queen: Queen,
+  king: King,
+};
+
+board.pieces = pieceConfig.flatMap(({ type, x, y, clr }) => {
+  if (!classes[type]) throw new Error(`Invalid piece type: ${type}`);
+  return x.map((xPos) => new classes[type](type, xPos, y, clr, board.cellSize));
+});
+
+// Pieces
+
+let pieceSelected = null;
+
+board.pieces.forEach((piece) => board.element.append(piece.element));
+
+board.pieces.forEach((piece) => {
+  const el = piece.element;
+
+  el.addEventListener("click", () => {
+    if (piece.clr !== playerTurn) return;
+
+    if (pieceSelected === piece) {
+      el.classList.remove("selected");
+      pieceSelected = null;
+    } else {
+      board.pieces.forEach((p) => p.element.classList.remove("selected"));
+      el.classList.add("selected");
+      pieceSelected = piece;
+    }
+  });
+});
+
+cells.forEach((cell) => {
+  cell.addEventListener("click", () => {
+    if (!pieceSelected) return;
+
+    const checkMoveResults = pieceSelected.checkValidMove(
+      board.pieces,
+      pieceSelected.col,
+      pieceSelected.row,
+      cell.dataset.col,
+      Number(cell.dataset.row),
+      pieceSelected.clr
+    );
+
+    const validMove = checkMoveResults.valid;
+
+    if (!validMove) return;
+
+    const captureMove = checkMoveResults.capture.valid;
+    const pieceToCapture = checkMoveResults.capture.piece;
+
+    if (captureMove) board.capturePiece(pieceToCapture);
+
+    pieceSelected.movePiece(
+      cell.dataset.col,
+      Number(cell.dataset.row),
+      board.cellSize
+    );
+
+    pieceSelected.element.classList.remove("selected");
+    pieceSelected = null;
+
+    turnToggle = !turnToggle;
+    playerTurn = turnToggle ? "white" : "black";
+
+    botMove();
+  });
+});
+
+function botMove() {
+  if (playerTurn !== "black") return;
+  const botPieces = board.pieces.filter((p) => p.clr === "black");
+
+  const cells = document.querySelectorAll(".cell");
+
+  const movablePieces = [];
+
+  for (let i = 0; i < botPieces.length; i++) {
+    const piece = botPieces[i];
+
+    for (let j = 0; j < cells.length; j++) {
+      const cell = cells[j];
+
+      const checkMoveResults = piece.checkValidMove(
+        board.pieces,
+        piece.col,
+        piece.row,
+        cell.dataset.col,
+        Number(cell.dataset.row),
+        piece.clr
+      );
+
+      const validMove = checkMoveResults.valid;
+
+      if (validMove) movablePieces.push(piece);
+    }
+  }
+
+  const randIdx = Math.floor(Math.random() * movablePieces.length);
+  const selectedPiece = movablePieces[randIdx];
+
+  const captureMove = checkMoveResults.capture.valid;
+  const pieceToCapture = checkMoveResults.capture.piece;
+
+  if (captureMove) board.capturePiece(pieceToCapture);
+
+  selectedPiece.movePiece(
+    cell.dataset.col,
+    Number(cell.dataset.row),
+    board.cellSize
+  );
+
+  turnToggle = !turnToggle;
+  playerTurn = turnToggle ? "white" : "black";
+}
