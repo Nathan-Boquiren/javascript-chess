@@ -163,8 +163,14 @@ function botMove() {
     }
   });
 
-  const randIdx = Math.floor(Math.random() * movablePieces.length);
-  const selectedPiece = movablePieces[randIdx];
+  const captureMoves = movablePieces.filter((m) => m.moveDetails.capture.valid);
+
+  const chosenMoves = captureMoves.length >= 1 ? captureMoves : movablePieces;
+
+  cl(captureMoves.length >= 1 ? "captureMoves" : "movablePieces");
+
+  const randIdx = Math.floor(Math.random() * chosenMoves.length);
+  const selectedPiece = chosenMoves[randIdx];
   const cell = selectedPiece.cell;
   const captureMove = selectedPiece.moveDetails.capture.valid;
   const pieceToCapture = selectedPiece.moveDetails.capture.piece;
