@@ -157,8 +157,33 @@ main {
 #board:has(.piece.white.selected) .piece:not(.selected, .white) {pointer-events: none}
 #board:has(.piece.black.selected) .piece:not(.selected, .black) {pointer-events: none}
 
-.piece.remove {
-    animation: shrink .5s ease forwards;
-}
+.piece.remove {animation: shrink .5s ease forwards}
 
 @keyframes shrink {to {opacity: 0; scale: 0}}
+
+/* Check Msg */
+
+#check-msg {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 700;
+    width: fit-content;
+    height: fit-content;
+    text-shadow: 2px 2px 5px rgb(0 0 0 / .5);
+    display: none;
+    opacity: 0;
+    translate: 0 2rem;
+    transition-property: display opacity translate;
+    transition-duration: .5s;
+    transition-timing-function: ease;
+    transition-behavior: allow-discrete;
+}
+
+#check-msg.show {
+    display: block;
+    opacity: 1;
+    translate: 0 0;
+    @starting-style {translate: 0 -2rem}
+}

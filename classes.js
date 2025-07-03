@@ -28,6 +28,7 @@ export class Board {
 
 export class Piece {
   constructor(name, col, row, clr, cellSize) {
+    this.type = name;
     this.col = letterSeq[col - 1];
     this.row = row;
     this.x = letterSeq.indexOf(this.col) * cellSize;

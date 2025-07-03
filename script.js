@@ -90,6 +90,8 @@ board.pieces.forEach((piece) => {
   });
 });
 
+// User Move
+
 cells.forEach((cell) => {
   cell.addEventListener("click", () => {
     if (!pieceSelected) return;
@@ -118,6 +120,8 @@ cells.forEach((cell) => {
       board.cellSize
     );
 
+    detectCheck(pieceSelected);
+
     pieceSelected.element.classList.remove("selected");
     pieceSelected = null;
 
@@ -129,6 +133,8 @@ cells.forEach((cell) => {
     }, 500);
   });
 });
+
+// Bot Move
 
 function botMove() {
   if (playerTurn !== "black") return;
@@ -167,8 +173,6 @@ function botMove() {
 
   const chosenMoves = captureMoves.length >= 1 ? captureMoves : movablePieces;
 
-  cl(captureMoves.length >= 1 ? "captureMoves" : "movablePieces");
-
   const randIdx = Math.floor(Math.random() * chosenMoves.length);
   const selectedPiece = chosenMoves[randIdx];
   const cell = selectedPiece.cell;
@@ -183,6 +187,40 @@ function botMove() {
     board.cellSize
   );
 
+  detectCheck(selectedPiece.piece);
+
   turnToggle = !turnToggle;
   playerTurn = turnToggle ? "white" : "black";
+}
+
+// Detect Check and Checkmate
+
+function detectCheck(piece) {
+  const oppClr = piece.clr === "white" ? "black" : "white";
+
+  const oppKing = board.pieces.find(
+    (p) => p.clr === oppClr && p.type === "king"
+  );
+
+  const checkResults = piece.checkValidMove(
+    board.pieces,
+    piece.col,
+    piece.row,
+    oppKing.col,
+    Number(oppKing.row),
+    piece.clr
+  );
+
+  if (!checkResults.valid) return;
+
+  const isCheck = checkResults.capture.valid;
+  if (isCheck) showCheckMsg();
+}
+
+function showCheckMsg() {
+  const checkMsg = document.getElementById("check-msg");
+  checkMsg.classList.add("show");
+  setTimeout(() => {
+    checkMsg.classList.remove("show");
+  }, 1500);
 }
