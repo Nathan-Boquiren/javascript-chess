@@ -120,6 +120,8 @@ cells.forEach((cell) => {
       board.cellSize
     );
 
+    cl(`${pieceSelected.type} to ${cell.dataset.col}${cell.dataset.row}`);
+
     detectCheck(pieceSelected);
 
     pieceSelected.element.classList.remove("selected");
@@ -134,10 +136,17 @@ cells.forEach((cell) => {
   });
 });
 
+let oppCheck = false;
+
 // Bot Move
 
 function botMove() {
   if (playerTurn !== "black") return;
+
+  if (oppCheck) {
+    handleOppCheck();
+    return;
+  }
 
   const botPieces = board.pieces.filter((p) => p.clr === "black");
   const cells = document.querySelectorAll(".cell");
@@ -187,10 +196,16 @@ function botMove() {
     board.cellSize
   );
 
+  cl(`${selectedPiece.piece.type} to ${cell.dataset.col}${cell.dataset.row}`);
+
   detectCheck(selectedPiece.piece);
 
   turnToggle = !turnToggle;
   playerTurn = turnToggle ? "white" : "black";
+}
+
+function handleOppCheck() {
+  cl("bot check");
 }
 
 // Detect Check and Checkmate
@@ -214,7 +229,10 @@ function detectCheck(piece) {
   if (!checkResults.valid) return;
 
   const isCheck = checkResults.capture.valid;
-  if (isCheck) showCheckMsg();
+  if (isCheck) {
+    showCheckMsg();
+    oppCheck = true;
+  }
 }
 
 function showCheckMsg() {
